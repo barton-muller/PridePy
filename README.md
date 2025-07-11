@@ -38,6 +38,14 @@ positions = [0.0, 0.5, 1.0]
 cmap = pp.colormaps.perceptual_colormap_nonuniform(colors, positions)
 pp.colormaps.show_colormap(cmap, name='Perceptual Colormap')
 ```
+## TODO
+
+- [ ] More color schemes i.e. customise rainbow to dark to include teal
+- [ ] Find missing colors and make red region more distinct
+- [ ] Sperate setting for poster/pres/report that can be invoked separately
+- [ ] Clipping to 0 automatically
+- [ ] Include some of the old wrappers again
+- [ ] Default colormaps?
 
 ## Documentation
 See docstrings in each module for details on classes and functions.
