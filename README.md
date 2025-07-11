@@ -35,6 +35,8 @@ positions = [0.0, 0.5, 1.0]
 cmap = pp.colormaps.perceptual_colormap_nonuniform(colors, positions)
 pp.colormaps.show_colormap(cmap, name='Perceptual Colormap')
 ```
+<img width="1297" height="723" alt="image" src="https://github.com/user-attachments/assets/5b459000-0cc4-44ab-b634-b683cdd4bf7f" />
+
 
 ## Documentation
 See docstrings in each module for details on classes and functions.
