@@ -1,0 +1,27 @@
+hex_code,name,tags
+#4BAB6E,Go Green,bright;green
+#35CBC4,Bright Teal,bright;teal
+#5DCBF3,Sky Blue,bright;lightblue
+#4069E0,Royal Blue,bright;blue
+#D16EFF,Parmaviolet,bright;purple
+#FF58B3,Hot Pink,bright;pink
+#EA2353,Crimson Pink,bright;fuchia
+#F14124,Red-Orange,bright;red
+#FD8C00,Orange,bright;orange
+#FFE066,Soft Yellow,bright;yellow
+#226B67,Dark Teal,dark;teal
+#1987A9,Ocean Blue,dark;lightblue
+#344885,Indigo,dark;blue
+#633585,Deep Purple,dark;purple
+#A31D6C,Magenta Plum,dark;pink
+#93032E,Burgundy,dark;fuchia
+#C3260C,Red,dark;red
+#F75C03,Tangerine,dark;orange
+#FFBA08,Golden Yellow,dark;yellow
+#468780,Muted Teal,muted;teal
+#6879A3,Slate Blue,muted;blue
+#C8A3E6,Lavender,muted;purple
+#E15AA1,Rose Pink,muted;pink
+#FA697B,Salmon Pink,muted;fuchia
+#E06450,Coral,muted;red
+#E9C46A,Warm Sand,muted
