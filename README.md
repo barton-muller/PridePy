@@ -50,3 +50,10 @@ pp.colormaps.show_colormap(cmap, name='Perceptual Colormap')
 ## Documentation
 See docstrings in each module for details on classes and functions.
 
+## Useful websites
+
+- [OKLCH Color Picker](https://oklch.com/)
+- [iwanthue – Distinct Color Generator](https://medialab.github.io/iwanthue/)
+- [Coolors – Color Schemes Generator](https://coolors.co/)
+- [Palettable – Color Palettes in Python](https://jiffyclub.github.io/palettable/)
+
