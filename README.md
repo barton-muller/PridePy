@@ -1,4 +1,4 @@
-# Pridey
+# PridePy
 
 Beautiful, flexible color and plotting utilities for matplotlib in Python.
 
@@ -15,12 +15,12 @@ pip install .
 Or build a wheel and install:
 ```bash
 python setup.py sdist bdist_wheel
-pip install dist/Pridey-*.whl
+pip install dist/PridePy-*.whl
 ```
 
 ## Usage Example
 ```python
-import Pridey as pp
+import PridePy as pp
 import matplotlib.pyplot as plt
 import numpy as np
 
