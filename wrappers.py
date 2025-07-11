@@ -1,5 +1,5 @@
 """
-Pridey.wrappers
+PridePy.wrappers
 Plotting wrapper functions and fitting utilities.
 """
 import numpy as np

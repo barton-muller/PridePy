@@ -1,5 +1,5 @@
 """
-Pridey
+PridePy
 Beautiful color and plotting utilities for matplotlib.
 
 Main modules:

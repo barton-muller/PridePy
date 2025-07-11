@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='Pridey',
+    name='PridePy',
     version='0.1.0',
     description='Beautiful color and plotting utilities for matplotlib',
     author='Barton Muller',
@@ -15,7 +15,7 @@ setup(
     ],
     include_package_data=True,
     package_data={
-        'Pridey': ['colorsheet.csv']
+        'PridePy': ['colorsheet.csv']
     },
     python_requires='>=3.7',
 )

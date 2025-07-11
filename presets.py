@@ -1,5 +1,5 @@
 """
-Pridey.presets
+PridePy.presets
 Default plotting settings and savefig wrapper.
 """
 import matplotlib as mpl

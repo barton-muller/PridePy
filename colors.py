@@ -1,5 +1,5 @@
 """
-Pridey.colors
+PridePy.colors
 Color utilities, swatch classes, color reading, colormap creation.
 """
 import colorsys
@@ -46,6 +46,11 @@ class PaintKit:
     def __len__(self):
         return len(self.colors)
     def __repr__(self):
+        ret = ""
+        for color in self.colors:
+            ret += f"ColorSwatch(name='{color.name}', hex='{color.hex}', tags={color.tags}) \n"
+
+        self.display_paintkit( label='name')
         return f"Collection of {len(self.colors)} colors"
     def filter(self, *, tags=None, any_tags=None):
         result = self.colors
@@ -77,8 +82,94 @@ class PaintKit:
             colors = self.colors
         return cycler(color=[c.hex for c in colors])
     def display_paintkit(self, color_tags=None, saturation_tags=None, label='hex'):
-        # ...existing code for display_paintkit...
-        pass
+        """
+        Display a grid of swatches by color and saturation tags.
+        """
+        import matplotlib.pyplot as plt
+        import numpy as np
+        grid_rows = []
+        label_rows = []
+        included = set()
+        if color_tags is None:
+            color_tags = self.color_tags
+        if saturation_tags is None:
+            saturation_tags = sorted({
+                tag for sw in self.colors
+                for tag in sw.tags
+                if tag in {'bright', 'dark', 'muted'}
+            })
+
+        for sat in saturation_tags:
+            row_colors = []
+            row_labels = []
+            for col in color_tags:
+                swatches = self.filter(tags={sat, col}).colors
+                if swatches:
+                    sw = swatches[0]
+                    rgb = hex_to_rgb(sw.hex)
+                    row_colors.append(rgb)
+                    row_labels.append(sw.hex if label == 'hex' else sw.name)
+                    included.update(swatches)
+                else:
+                    row_colors.append((1, 1, 1))
+                    row_labels.append("")
+            grid_rows.append(row_colors)
+            label_rows.append(row_labels)
+
+        grid = np.array(grid_rows)
+        unmatched = [sw for sw in self.colors if sw not in included]
+        if unmatched:
+            n_cols = len(color_tags)*2
+            n_rows = int(np.ceil(len(unmatched) / n_cols))
+            grid_un = np.ones((n_rows, n_cols, 3))
+        else:
+            n_rows = 0
+
+        fig, (ax_grid, ax_unmatched) = plt.subplots(
+            2, 1,
+            figsize=(len(color_tags) * 1.5, len(saturation_tags) * 1.2 + n_rows*1.2),
+            height_ratios=[len(saturation_tags), n_rows/2 if n_rows else 0.5],
+            constrained_layout=True
+        )
+
+        # --- Main Grid Plot ---
+        ax_grid.imshow(grid, aspect='equal')
+
+        for i, row in enumerate(label_rows):
+            for j, text in enumerate(row):
+                if text:
+                    r, g, b = grid[i][j]
+                    brightness = 0.299*r + 0.587*g + 0.114*b
+                    text_color = 'black' if brightness > 0.6 else 'white'
+                    ax_grid.text(j, i, text, ha='center', va='center',
+                                color=text_color, fontsize=7, fontweight='bold')
+
+        ax_grid.set_xticks(range(len(color_tags)))
+        ax_grid.set_xticklabels(color_tags, fontsize=10, rotation=45, ha='right')
+        ax_grid.set_yticks(range(len(saturation_tags)))
+        ax_grid.set_yticklabels(saturation_tags, fontsize=10)
+        ax_grid.set_title("Color Tag (X) vs Saturation Tag (Y)", fontsize=12)
+
+        # --- Unmatched Swatches Plot ---
+        ax_unmatched.axis('off')
+        if unmatched:
+            label_un = [["" for _ in range(n_cols)] for _ in range(n_rows)]
+            for idx, sw in enumerate(unmatched):
+                r, c = divmod(idx, n_cols)
+                grid_un[r, c] = hex_to_rgb(sw.hex)
+                label_un[r][c] = sw.hex if label == 'hex' else sw.name
+            ax_unmatched.imshow(grid_un, aspect='equal')
+            for r in range(n_rows):
+                for c in range(n_cols):
+                    text = label_un[r][c]
+                    if text:
+                        r_val, g_val, b_val = grid_un[r][c]
+                        brightness = 0.299 * r_val + 0.587 * g_val + 0.114 * b_val
+                        text_color = 'black' if brightness > 0.6 else 'white'
+                        ax_unmatched.text(c, r, text, ha='center', va='center',
+                                        color=text_color, fontsize=6, fontweight='bold')
+            ax_unmatched.set_title("Unmatched Swatches", fontsize=12)
+        plt.show()
 
 def read_colors_from_csv(filename):
     swatches = []
@@ -141,7 +232,7 @@ try:
     paintkit = PaintKit(color_swatches)
     use_paintkit = True
 except FileNotFoundError:
-    print("colorsheet.csv not found in Pridey directory.")
+    print("colorsheet.csv not found in PridePy directory.")
     use_paintkit = False
 
 if use_paintkit:

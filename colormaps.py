@@ -1,5 +1,5 @@
 """
-Pridey.colormaps
+PridePy.colormaps
 Colormap creation utilities for perceptual and sRGB gradients.
 """
 import numpy as np
