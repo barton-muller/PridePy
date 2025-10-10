@@ -28,16 +28,43 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Use a custom color cycle
-plt.plot(np.arange(10), label='demo')
-plt.legend()
-plt.show()
+ax.set_prop_cycle((pp.paintkit.filter(tags={'dark'})).ordered_swatches(pp.full_rainbow).to_cycler())
+```
+options for colour schemes include
+for saturation: bright, dark, muted
+for color schemes: rainbow, full_rainbow, tab10
+```python 
+# color schemes
+rainbow = ['green','lightblue', 'blue', 'purple', 'pink','fuchia', 'orange']
+full_rainbow = ['green','teal','lightblue', 'blue', 'purple', 'pink','fuchia', 'red', 'orange', 'yellow']
+tab10 = ['blue', 'orange', 'green', 'pink', 'purple', 'lightblue', 'fuchia','yellow', 'teal', 'red']
 
+#use this to set default color cycle
+bright_tab10 = pp.paintkit.filter(tags={'dark'}).ordered_swatches(pp.full_rainbow) #change these to get scheme of choice
+pp.mpl.rcParams['axes.prop_cycle'] = bright_tab10.to_cycler() 
+```
+
+```python
 # Use a perceptual colormap
 colors = [swatch.hex for swatch in pp.colors.paintkit.ordered_swatches(['blue','pink','orange']).colors]
 positions = [0.0, 0.5, 1.0]
 cmap = pp.colormaps.perceptual_colormap_nonuniform(colors, positions)
 pp.colormaps.show_colormap(cmap, name='Perceptual Colormap')
 ```
+Can also be used for better figure saving by setting `SAVEFIG = True` saving to default figs folder:
+```python
+def savefig_with_folder(fname, *args, folder="figs", **kwargs):
+    if SAVE_FIGS:
+        if not os.path.isabs(fname):
+            os.makedirs(folder, exist_ok=True)
+            fname = os.path.join(folder, fname)
+        return _original_savefig(fname, *args, **kwargs)
+    else:
+        print('Currently not saving figures')
+
+plt.savefig = savefig_with_folder
+```
+
 
 ## Documentation
 See docstrings in each module for details on classes and functions.

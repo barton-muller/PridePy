@@ -15,7 +15,7 @@ setup(
     ],
     include_package_data=True,
     package_data={
-        'PridePy': ['colorsheet.csv']
+        'pridepy': ['colorsheet.csv']
     },
     python_requires='>=3.7',
 )

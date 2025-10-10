@@ -1,0 +1,13 @@
+README.md
+setup.py
+PridePy.egg-info/PKG-INFO
+PridePy.egg-info/SOURCES.txt
+PridePy.egg-info/dependency_links.txt
+PridePy.egg-info/requires.txt
+PridePy.egg-info/top_level.txt
+pridepy/__init__.py
+pridepy/colormaps.py
+pridepy/colors.py
+pridepy/colorsheet.csv
+pridepy/presets.py
+pridepy/wrappers.py
