@@ -65,7 +65,22 @@ def savefig_with_folder(fname, *args, folder="figs", **kwargs):
 plt.savefig = savefig_with_folder
 ```
 
+## TODO
+
+- [ ] More color schemes i.e. customise rainbow to dark to include teal
+- [ ] Find missing colors and make red region more distinct
+- [ ] Sperate setting for poster/pres/report that can be invoked separately
+- [ ] Clipping to 0 automatically
+- [ ] Include some of the old wrappers again
+- [ ] Default colormaps?
 
 ## Documentation
 See docstrings in each module for details on classes and functions.
+
+## Useful websites
+
+- [OKLCH Color Picker](https://oklch.com/)
+- [iwanthue – Distinct Color Generator](https://medialab.github.io/iwanthue/)
+- [Coolors – Color Schemes Generator](https://coolors.co/)
+- [Palettable – Color Palettes in Python](https://jiffyclub.github.io/palettable/)
 
