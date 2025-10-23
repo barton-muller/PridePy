@@ -9,5 +9,6 @@ pridepy/__init__.py
 pridepy/colormaps.py
 pridepy/colors.py
 pridepy/colorsheet.csv
+pridepy/plt_y.py
 pridepy/presets.py
 pridepy/wrappers.py

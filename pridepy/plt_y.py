@@ -1,5 +1,7 @@
 import plotly.graph_objects as go
 import numpy as np
+import subprocess
+import tempfile
 
 class Plty:
     def __init__(self):
@@ -86,6 +88,16 @@ class Plty:
             ymax if ymax is not None else current.range[1] if current.range else None
         ]
         self.fig.update_layout(yaxis=dict(range=new_range))
+
+
+    def save_to_clipboard(self):
+        """Saves figure to clipboard but uses script from https://alecjacobson.com/weblog/3816.html
+        but can probably also use https://github.com/jcsalterego/pngpaste/"""
+        with tempfile.NamedTemporaryFile(suffix=".png") as tmp:
+            self.fig.write_image(tmp.name, scale=3)  # requires plotly + kaleido
+            tmp.flush()
+            # Copy to clipboard using impbcopy
+            subprocess.run(["impbcopy", tmp.name])
 
     def show(self):
         self.fig.show()
