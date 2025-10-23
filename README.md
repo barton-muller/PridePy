@@ -6,10 +6,15 @@ A package for default matplotlib settings that are better for including in poste
   <img src="https://github.com/user-attachments/assets/23035b7b-6f01-41da-9a44-3d7c8fa495f4" height="350" />
 
 ## Features
+### Paintkit
 - Custom color swatches and palettes
 - Perceptually uniform and sRGB colormap creation
+### matplotlib addons
 - Default plotting presets for publication-quality figures
 - Plotting wrappers for curve fitting and more
+### Plotly addons
+- matplotlib Plotly wrapper e.g. use plty.plot instead of plt.plot
+- Plotly templates
 
 ## Installation
 ```bash
@@ -21,7 +26,7 @@ python setup.py sdist bdist_wheel
 pip install dist/PridePy-*.whl
 ```
 
-## Usage Example
+## Paintkit Usage Example
 ```python
 import PridePy as pp
 import matplotlib.pyplot as plt
@@ -65,14 +70,75 @@ def savefig_with_folder(fname, *args, folder="figs", **kwargs):
 plt.savefig = savefig_with_folder
 ```
 
+## matplotlib addons usage
+Given this is not a common package I use condittional import allowing code to be run without PridePy.
+After importing one can set default colorscheme and template for plots.
+The `pp.paintkit.filter(tags={'bright'}).ordered_swatches(pp.tab10)` is the default color cycle.
+
+```python
+try:
+    import pridepy as pp # type: ignore
+    from pridepy.plt_y import plty  # type: ignore # mpl-like plotly wrapper
+
+    #update colorscheme and default template
+    pp.scheme = pp.paintkit.filter(tags={'bright'}).ordered_swatches(pp.tab10)
+    pp.mpl.rcParams['axes.prop_cycle'] = pp.scheme.to_cycler()  # set default color cycle
+    pp.plotly_scheme = pp.paintkit_to_colorway(pp.scheme)
+    pp.plt_y.pio.templates['pridepy'].layout.colorway = pp.plotly_scheme 
+    pp.plt_y.pio.templates.default = 'plotly_dark+presentation+pridepy+loglog'
+
+    plty = pp.plt_y.Plty() #update wrapper for new presets
+
+except ImportError as e:
+    print(f"{e}. Proceeding with default plots")
+    print(" Can be installed with \"pip install git+https://github.com/barton-muller/PridePy.git\"")
+```
+
+## Plotly addons usage
+I initialise plotly in the code above aswell. Setting the color scheme and template.
+Plotly templates can be combined with `+` very nicely. The default is `'plotly_white+presentation+pridepy'`
+The plotly templates can be found [here](https://plotly.com/python/templates/).
+The main ones of interest are `plotly`=default, `plotly_dark`=dark mode, and `plotly_white`=for publications
+My template addons are `loglog` and `pridepy` which are defined in `plt_y.py`
+The colorsceme needs to be set in the colorway attribute of the layout.
+
+Theres a class Plty which I make an instance of called plty. A Ploty figure is stored at plty.fig for direct interaction with plotly but then I've added some functions to make plotly it easier to use.
+- `plot(x, y)` and `plot(y)` for line plots with label argument same as plt.plot
+- `hist(data, bins=50)` for histograms
+- `xlim(xmin, xmax)` and `ylim(ymin, ymax)` for axis limits  
+- `save_to_clipboard()` is experiemntal function to copy figures as PNGs. very useful for my notebook although it uses a custom script - see docstring
+- `show()` to show figure and restet figure to empty `plty.fig = go.Figure()` and `show_()` to clear figure without showing
+- if you dont run show you will build up traces on your plot with repeated runs
+
+## Example
+```python
+from pridepy.plt_y import plty
+import numpy as np
+
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+plty.plot(x, y, color='blue', label='sin(x)')
+# set titiles and size. can also use nondefault template here
+plty.fig.update_layout(
+    # template='plotly_white+presentation+pridepy+loglog',
+    width=800, height=400,
+    title='Dwell Time Distribution', xaxis_title='First Passage Time', yaxis_title='Probability Density')
+plty.show() #show figure and then clear it
+```
+
+
 ## TODO
 
 - [ ] More color schemes i.e. customise rainbow to dark to include teal
 - [ ] Find missing colors and make red region more distinct
+- [ ] purple and pink are not distinct enough in tab10 bright
+- [ ] look at [flexoki colors](https://stephango.com/flexoki) which is what i was trying to make
 - [ ] Sperate setting for poster/pres/report that can be invoked separately
 - [ ] Clipping to 0 automatically
 - [ ] Include some of the old wrappers again
 - [ ] Default colormaps?
+- [ ] Expand plty wrapper to include more plotly functions
 
 ## Documentation
 See docstrings in each module for details on classes and functions.
@@ -83,4 +149,4 @@ See docstrings in each module for details on classes and functions.
 - [iwanthue – Distinct Color Generator](https://medialab.github.io/iwanthue/)
 - [Coolors – Color Schemes Generator](https://coolors.co/)
 - [Palettable – Color Palettes in Python](https://jiffyclub.github.io/palettable/)
-
+- [flexoki colors](https://stephango.com/flexoki)
