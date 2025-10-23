@@ -1,7 +1,10 @@
 import plotly.graph_objects as go
+import plotly.io as pio
 import numpy as np
 import subprocess
 import tempfile
+
+from . import colors
 
 class Plty:
     def __init__(self):
@@ -106,6 +109,67 @@ class Plty:
     def show_(self):
         # self.fig.show()
         self.fig = go.Figure()
+
+# Define Plotly Themes
+# 1. Font definitions
+font_main = dict(family="Arial", size=12, )
+title_font = {**font_main, 'size':20}
+axis_title_font = {**font_main, 'size':18}
+
+# 2. Tick configuration (can toggle on/off by changing ticklen or ticks)
+tick_settings = dict(
+    ticks="outside",
+    ticklen=6,
+    tickwidth=1.0,
+)
+
+# 3. Axis base settings (x and y share most properties)
+axis_base = dict(
+    title=dict(text=""),
+    showline=True,
+    linewidth=1.8,
+    mirror=False,   # turn off top/right spines
+    showgrid=True,
+    zeroline=False,
+    title_standoff=1, # distance between title and axis
+    tickfont={**font_main, 'size':16},
+    **tick_settings
+)
+
+# 5. Legend
+legend_settings = dict(
+    orientation="v",
+    yanchor="top",
+    y=1,
+    xanchor="left",
+    x=1.02,
+    font={**font_main, 'size':12},
+    bgcolor="rgba(0,0,0,0)"
+)
+
+# 6. Combine into layout
+pridepy_base_template = dict(
+    title=dict(text="",x=0.5, xanchor='center'),
+    title_font=title_font,
+    xaxis=axis_base,
+    xaxis_title_font=axis_title_font,
+    yaxis=axis_base,
+    yaxis_title_font=axis_title_font,
+
+    legend=legend_settings,
+
+    margin=dict(l=60, r=60, t=40, b=40),
+    colorway= colors.plotly_scheme,
+    # font=font_main,
+)
+loglog_template = dict(xaxis_type='log', yaxis_type='log',)
+
+
+pio.templates["pridepy"] = go.layout.Template(layout=pridepy_base_template)
+pio.templates["loglog"] = go.layout.Template(layout=loglog_template)
+# use plotly_white for paper graphs or plotly_dark for dark mode or plotly for default
+# presentation makes lines slighlty thicker
+pio.templates.default = 'plotly_white+presentation+pridepy'
 
 # Usage
 plty = Plty()

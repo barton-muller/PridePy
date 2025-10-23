@@ -5,7 +5,7 @@ Color utilities, swatch classes, color reading, colormap creation.
 import colorsys
 import csv
 import numpy as np
-from matplotlib.colors import ListedColormap, to_rgb
+from matplotlib.colors import ListedColormap, to_rgb, LinearSegmentedColormap
 from matplotlib import cycler
 from colorspacious import cspace_convert
 import matplotlib as mpl
@@ -15,6 +15,10 @@ import os
 def hex_to_rgb(hex_code):
     hex_clean = hex_code.lstrip("#")
     return tuple(int(hex_clean[i:i+2], 16)/255 for i in (0, 2, 4))
+def floats_to_rgbstring(color_float):
+    """Convert a float tuple to an RGB string for use by plotly
+    form (0.0, 0.0, 0.0) to "rgb(0, 0, 0)"""
+    return f"rgb({int(color_float[0]*255)}, {int(color_float[1]*255)}, {int(color_float[2]*255)})"
 
 class ColorSwatch:
     def __init__(self, name, hex_code, tags=None):
@@ -225,6 +229,10 @@ def show_colormap(cmap, name=None, height=0.5):
         ax.set_title(name, fontsize=10)
     plt.show()
 
+def paintkit_to_colorway(paintkit):
+    colorway = [c['color'] for c in paintkit.to_cycler()._left]
+    return colorway
+
 # --- Build paintkit from CSV and set mpl color cycle ---
 try:
     csv_path = os.path.join(os.path.dirname(__file__), 'colorsheet.csv')
@@ -241,3 +249,6 @@ if use_paintkit:
     tab10 = ['blue', 'orange', 'green', 'pink', 'purple', 'lightblue', 'fuchia','yellow', 'teal', 'red']
     bright_tab10 = paintkit.filter(tags={'bright'}).ordered_swatches(tab10)
     mpl.rcParams['axes.prop_cycle'] = bright_tab10.to_cycler()
+    scheme = paintkit.filter(tags={'bright'}).ordered_swatches(tab10)
+    mpl.rcParams['axes.prop_cycle'] = scheme.to_cycler()  # set default color cycle
+    plotly_scheme = paintkit_to_colorway(scheme)
