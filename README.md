@@ -55,6 +55,8 @@ colors = [swatch.hex for swatch in pp.colors.paintkit.ordered_swatches(['blue','
 positions = [0.0, 0.5, 1.0]
 cmap = pp.colormaps.perceptual_colormap_nonuniform(colors, positions)
 pp.colormaps.show_colormap(cmap, name='Perceptual Colormap')
+for i in range(1, 20, 1):
+    c = floats_to_rgbstring(cmap(i/10))
 ```
 Can also be used for better figure saving by setting `SAVEFIG = True` saving to default figs folder:
 ```python
@@ -110,7 +112,7 @@ Theres a class Plty which I make an instance of called plty. A Ploty figure is s
 - `show()` to show figure and restet figure to empty `plty.fig = go.Figure()` and `show_()` to clear figure without showing
 - if you dont run show you will build up traces on your plot with repeated runs
 
-## Example
+### Example
 ```python
 from pridepy.plt_y import plty
 import numpy as np
@@ -139,6 +141,9 @@ plty.show() #show figure and then clear it
 - [ ] Include some of the old wrappers again
 - [ ] Default colormaps?
 - [ ] Expand plty wrapper to include more plotly functions
+- [ ]
+  
+
 
 ## Documentation
 See docstrings in each module for details on classes and functions.
