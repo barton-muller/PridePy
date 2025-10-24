@@ -137,8 +137,10 @@ This is very simmilar what I'm trying to do so I've added it to PridePy.
 The colors are available under the tag `flexoki` and theres `muted` and `dark` versions. They work with orderings of `tab10` and `full_rainbow` or `flexoki` which is same as rainbow but starts at blue
 Flexoki color scheme © Stephen Ango, licensed under the MIT License. Used with attribution.
 
-Theres a whole pallete of different shaded colors which I could acsess through[flexoki-py](https://github.com/moss-xyz/flexoki-py) which has simmilar color pallete abilities and can add itself to mpl colour list.
+Theres a whole pallete of different shaded colors which I could acsess through [flexoki-py](https://github.com/moss-xyz/flexoki-py) which has simmilar color pallete abilities and can add itself to mpl colour list.
 
+<img  height="200" alt="flexoki demonstration" src="https://github.com/user-attachments/assets/c402457e-15c6-45b1-9d0a-9c3c08b677da" />
+Example of flexoki colours with dark first then muted.
 
 ## TODO
 
