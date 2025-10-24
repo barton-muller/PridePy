@@ -110,7 +110,6 @@ Theres a class Plty which I make an instance of called plty. A Ploty figure is s
 - `show()` to show figure and restet figure to empty `plty.fig = go.Figure()` and `show_()` to clear figure without showing
 - if you dont run show you will build up traces on your plot with repeated runs
 
-## Example
 ```python
 from pridepy.plt_y import plty
 import numpy as np
@@ -126,6 +125,17 @@ plty.fig.update_layout(
     title='Dwell Time Distribution', xaxis_title='First Passage Time', yaxis_title='Probability Density')
 plty.show() #show figure and then clear it
 ```
+## Flexoki colors
+[flexoki colors](https://stephango.com/flexoki) by stephango
+> Flexoki is an inky color scheme for prose and code. Flexoki is designed for reading and writing on digital screens. It is inspired by analog inks and warm shades of paper.
+> Flexoki is minimalistic and high-contrast. The colors are calibrated for legibility and perceptual balance across devices and when switching between light and dark modes.
+> Flexoki is open-source under the MIT license. Flexoki is available for dozens of popular apps, including Obsidian using my theme Minimal.
+
+This is very simmilar what I'm trying to do so I've added it to PridePy.
+The colors are available under the tag `flexoki` and theres `muted` and `dark` versions. They work with orderings of `tab10` and `full_rainbow` or `flexoki` which is same as rainbow but starts at blue
+Flexoki color scheme © Stephen Ango, licensed under the MIT License. Used with attribution.
+
+Theres a whole pallete of different shaded colors which I could acsess through[flexoki-py](https://github.com/moss-xyz/flexoki-py) which has simmilar color pallete abilities and can add itself to mpl colour list.
 
 
 ## TODO
@@ -133,7 +143,7 @@ plty.show() #show figure and then clear it
 - [ ] More color schemes i.e. customise rainbow to dark to include teal
 - [ ] Find missing colors and make red region more distinct
 - [ ] purple and pink are not distinct enough in tab10 bright
-- [ ] look at [flexoki colors](https://stephango.com/flexoki) which is what i was trying to make
+- [x] look at [flexoki colors](https://stephango.com/flexoki) which is what i was trying to make
 - [ ] Sperate setting for poster/pres/report that can be invoked separately
 - [ ] Clipping to 0 automatically
 - [ ] Include some of the old wrappers again

@@ -131,7 +131,7 @@ class PaintKit:
 
         fig, (ax_grid, ax_unmatched) = plt.subplots(
             2, 1,
-            figsize=(len(color_tags) * 1.5, len(saturation_tags) * 1.2 + n_rows*1.2),
+            figsize=(len(color_tags) * 1.5, max(len(saturation_tags) * 1.2 + n_rows*1.2, 4)),
             height_ratios=[len(saturation_tags), n_rows/2 if n_rows else 0.5],
             constrained_layout=True
         )
@@ -246,6 +246,7 @@ except FileNotFoundError:
 if use_paintkit:
     rainbow = ['green','lightblue', 'blue', 'purple', 'pink','fuchia', 'orange']
     full_rainbow = ['green','teal','lightblue', 'blue', 'purple', 'pink','fuchia', 'red', 'orange', 'yellow']
+    flexoki = [ 'blue', 'purple', 'pink','fuchia','red', 'orange', 'yellow','green','teal','lightblue',]
     tab10 = ['blue', 'orange', 'green', 'pink', 'purple', 'lightblue', 'fuchia','yellow', 'teal', 'red']
     bright_tab10 = paintkit.filter(tags={'bright'}).ordered_swatches(tab10)
     mpl.rcParams['axes.prop_cycle'] = bright_tab10.to_cycler()
