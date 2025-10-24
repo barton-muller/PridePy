@@ -55,6 +55,8 @@ colors = [swatch.hex for swatch in pp.colors.paintkit.ordered_swatches(['blue','
 positions = [0.0, 0.5, 1.0]
 cmap = pp.colormaps.perceptual_colormap_nonuniform(colors, positions)
 pp.colormaps.show_colormap(cmap, name='Perceptual Colormap')
+for i in range(1, 20, 1):
+    c = floats_to_rgbstring(cmap(i/10))
 ```
 Can also be used for better figure saving by setting `SAVEFIG = True` saving to default figs folder:
 ```python
@@ -149,6 +151,9 @@ Theres a whole pallete of different shaded colors which I could acsess through[f
 - [ ] Include some of the old wrappers again
 - [ ] Default colormaps?
 - [ ] Expand plty wrapper to include more plotly functions
+- [ ]
+  
+
 
 ## Documentation
 See docstrings in each module for details on classes and functions.
