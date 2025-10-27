@@ -247,7 +247,7 @@ if use_paintkit:
     rainbow = ['green','lightblue', 'blue', 'purple', 'pink','fuchia', 'orange']
     full_rainbow = ['green','teal','lightblue', 'blue', 'purple', 'pink','fuchia', 'red', 'orange', 'yellow']
     flexoki = [ 'blue', 'purple', 'pink','fuchia','red', 'orange', 'yellow','green','teal','lightblue',]
-    tab10 = ['blue', 'orange', 'green', 'pink', 'purple', 'lightblue', 'fuchia','yellow', 'teal', 'red']
+    tab10 = ['blue', 'orange', 'green', 'pink','lightblue', 'purple',  'fuchia','yellow', 'teal', 'red']
     bright_tab10 = paintkit.filter(tags={'bright'}).ordered_swatches(tab10)
     mpl.rcParams['axes.prop_cycle'] = bright_tab10.to_cycler()
     scheme = paintkit.filter(tags={'bright'}).ordered_swatches(tab10)
