@@ -1,7 +1,7 @@
 # PridePy
 
 A package for default matplotlib settings that are better for including in posters/presentations/reports as well as providing a better set of colours which can be used to make nice qualitative colourmaps as well as gradients.
-  
+Previously called matplotlibOUT  
   <img src="https://github.com/user-attachments/assets/5b459000-0cc4-44ab-b634-b683cdd4bf7f" height="350" />
   <img src="https://github.com/user-attachments/assets/23035b7b-6f01-41da-9a44-3d7c8fa495f4" height="350" />
 
