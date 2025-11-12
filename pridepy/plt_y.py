@@ -15,27 +15,60 @@ class Plty:
         Works like plt.plot:
         - plot(y) → x = np.arange(len(y))
         - plot(x, y) → plots with provided x
-        - Optional: color='red' or any plotly color
+        - plot(x, y, fmt) → fmt controls marker and line style (e.g., 'o-', 's--', '^:')
+        - Optional: color='red', linestyle='-', etc.
         """
+        fmt = None
         if len(args) == 1:  # y only
             y = np.asarray(args[0])
             x = np.arange(len(y))
-        elif len(args) == 2:  # x, y
-            x, y = map(np.asarray, args)
+        elif len(args) == 2:  # x, y or y, fmt
+            if isinstance(args[1], str):  # y, fmt
+                y = np.asarray(args[0])
+                x = np.arange(len(y))
+                fmt = args[1]
+            else:  # x, y
+                x, y = map(np.asarray, args)
+        elif len(args) == 3:  # x, y, fmt
+            x, y = map(np.asarray, args[:2])
+            fmt = args[2]
         else:
-            raise ValueError("Use plty.plot(y) or plty.plot(x, y)")
+            raise ValueError("Use plty.plot(y), plty.plot(x, y), or plty.plot(x, y, fmt)")
 
         name = kwargs.pop("label", None)
         color = kwargs.pop("color", None)
-        dash  = kwargs.pop("dash", None)  # new argument for dash style
+        linestyle = kwargs.pop("linestyle", None)
+        marker = kwargs.pop("marker", None)
+        fmt = kwargs.pop("fmt", fmt)
+        
+        # Parse format string
+        if fmt:
+            marker_map = {'o': 'circle', 's': 'square', '^': 'triangle-up', 'v': 'triangle-down', 
+                          'd': 'diamond', '*': 'star', '+': 'cross', 'x': 'x'}
+            linestyle_map = {'--': 'dash', ':': 'dot', '-.': 'dashdot','-': 'solid'}
+            
+            for key, val in marker_map.items():
+                if key in fmt:
+                    marker = val
+                    break
+            for key, val in linestyle_map.items():
+                if key in fmt:
+                    linestyle = val
+                    break
 
         line_dict = {}
         if color is not None:
             line_dict["color"] = color
-        if dash is not None:
-            line_dict["dash"] = dash
+        if linestyle is not None:
+            line_dict["dash"] = linestyle
 
-        self.fig.add_trace(go.Scatter(x=x, y=y, mode="lines", name=name, line=line_dict, **kwargs))
+        marker_dict = {}
+        if marker is not None:
+            marker_dict["symbol"] = marker
+            marker_dict["size"] = 8
+
+        self.fig.add_trace(go.Scatter(x=x, y=y, mode="lines+markers" if marker else "lines", 
+                                     name=name, line=line_dict, marker=marker_dict, **kwargs))
 
     def hist(self, data, bins=50, **kwargs):
         """
@@ -91,7 +124,20 @@ class Plty:
             ymax if ymax is not None else current.range[1] if current.range else None
         ]
         self.fig.update_layout(yaxis=dict(range=new_range))
+    def title(self, text):
+        """Set the figure title"""
+        self.fig.update_layout(title=dict(text=text))
+    def xlabel(self, text):
+        """Set the x-axis title"""
+        self.fig.update_layout(xaxis_title=text)
 
+    def ylabel(self, text):
+        """Set the y-axis title"""
+        self.fig.update_layout(yaxis_title=text)
+    def loglog(self):
+        self.fig.update_layout(xaxis_type='log', yaxis_type='log')
+    def linear(self):
+        self.fig.update_layout(xaxis_type='linear', yaxis_type='linear')
 
     def save_to_clipboard(self):
         """Saves figure to clipboard but uses script from https://alecjacobson.com/weblog/3816.html
