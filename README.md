@@ -153,7 +153,7 @@ Example of flexoki colours with dark first then muted.
 - [ ] Include some of the old wrappers again
 - [ ] Default colormaps?
 - [ ] Expand plty wrapper to include more plotly functions
-- [ ]
+- [ ] Customize shorthand colors so I can easily set color with fmt
   
 
 
