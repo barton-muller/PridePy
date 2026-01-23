@@ -208,6 +208,7 @@ pridepy_base_template = dict(
 
     margin=dict(l=60, r=60, t=40, b=40),
     colorway= colors.plotly_scheme,
+    hoverlabel=dict(namelength=-1)
     # font=font_main,
 )
 loglog_template = dict(xaxis_type='log', yaxis_type='log',)
