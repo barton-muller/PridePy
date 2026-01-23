@@ -40,6 +40,8 @@ class Plty:
         linestyle = kwargs.pop("linestyle", None)
         marker = kwargs.pop("marker", None)
         fmt = kwargs.pop("fmt", fmt)
+        alpha = kwargs.pop("alpha", None)
+        kwargs['opacity'] = alpha
         
         # Parse format string
         if fmt:
