@@ -127,6 +127,41 @@ plty.fig.update_layout(
     title='Dwell Time Distribution', xaxis_title='First Passage Time', yaxis_title='Probability Density')
 plty.show() #show figure and then clear it
 ```
+## Interplot Presets
+
+The `interplot_presets.py` module provides pre-configured settings and utilities for interactive plotting with interplot which is a plotting module where you can choose backend Interactive=Plotly or Non-Interactive=Matplotlib.:
+
+**Features:**
+- **Matplotlib defaults**: Clean figure styling with transparent backgrounds and tight layouts
+- **Custom plot aesthetics**: Minimalist style with top/right spines hidden, customized tick parameters
+- **Auto-save with folders**: Automatically saves figures to a `figs/` folder with timestamps
+- **Auto-close behavior**: Automatically closes non-interactive plots after showing
+- **Matplotlib-like interface**: `Iplt` class provides a `plt.plot()` style API with support for format strings (e.g., `'ro-'`, `'b--'`)
+
+**Usage:**
+```python
+from pridepy.interplot_presets import iplt, iplot
+#set color cycle which needs to be list of HEX like in plotly
+iplot.conf.COLOR_CYCLE = pp.plotly_scheme 
+iplot.conf.INTERACTIVE = False #default interactivity True=Plotly, False=Matplotlib
+
+# Interplot usage: make fig
+fig = iplot.Plot(interactive=iplot.conf.INTERACTIVE) #Takes args for subplots and more
+fig.add_scatter(x, y)
+fig.save() #save to iplot.conf.FIG_FILE = 'figs' with timestamp if iplot.conf.SAVE_FIGS = True
+fig.show() # my replacemnet wrapper for .post_process().show().clear() 
+#in matplotlib mode showing without closing lead to build up of figs
+#TODO: clear=False arg
+
+# iplt for matplotlib-style plotting
+# iplt.fig = iplot.Plot() #Forwards all unknown attributes/methods to self.fig
+iplt.plot(x, y, 'ro-', label='Data') #Works like plt.plot
+iplt.add_scatter(x, y, marker='X')
+iplt.update(xlog=False, ylog=True, xlim=(0.5, 1.0), ylim=(0.0, 1.0))
+#TODO add mpl like funcs
+iplt.show()
+```
+
 ## Flexoki colors
 [flexoki colors](https://stephango.com/flexoki) by stephango
 > Flexoki is an inky color scheme for prose and code. Flexoki is designed for reading and writing on digital screens. It is inspired by analog inks and warm shades of paper.
