@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='PridePy',
+    name='plotfair',
     version='0.1.0',
     description='Beautiful color and plotting utilities using matplotlib & plotly',
     author='Barton Muller',
@@ -15,7 +15,7 @@ setup(
     ],
     include_package_data=True,
     package_data={
-        'pridepy': ['colorsheet.csv']
+        'plotfair': ['colorsheet.csv']
     },
     python_requires='>=3.7',
 )
