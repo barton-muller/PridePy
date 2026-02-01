@@ -1,6 +1,18 @@
+"""Presets and utilities for interplot plotting library.
+
+This module configures default styles, behaviors, and helper classes for
+interplot (iplot) plots. It customizes matplotlib and plotly plot appearances,
+provides enhanced show and save methods, and defines a convenient plotting
+interface via the Iplt class.
+"""
+
+from datetime import datetime
+from pathlib import Path
+
 import interplot as iplot
 import matplotlib as mpl
 import numpy as np
+import plotly.graph_objects as go
 
 mpl.rcParams.update({
     'figure.figsize': (6, 4),
@@ -9,12 +21,21 @@ mpl.rcParams.update({
     'savefig.dpi': 'figure'
 })
 
-# iplot.conf.COLOR_CYCLE = pp.plotly_scheme 
+# iplot.conf.COLOR_CYCLE = pp.plotly_scheme
 iplot.conf.INTERACTIVE = True
 iplot.conf.MPL_FIG_SIZE = (700, 400)
 
+
 def my_mpl_style(fig, ax):
-    # ax has shape (rows, cols) even for 1x1
+    """Apply custom matplotlib style to figures and axes.
+
+    Args:
+        fig: Matplotlib figure object.
+        ax: Axes array (2D even for 1x1).
+
+    Returns:
+        Tuple of (fig, ax) with style applied.
+    """
     for a in ax.flat:
         # spines
         a.spines['top'].set_visible(False)
@@ -23,48 +44,45 @@ def my_mpl_style(fig, ax):
         a.spines['bottom'].set_visible(True)
 
         # major ticks
-        a.tick_params(axis='x', which='major',
-                      direction='out', length=6, width=1.0,
-                      labelsize=20)
-        a.tick_params(axis='y', which='major',
-                      direction='out', length=6, width=1.0,
-                      labelsize=20)
+        a.tick_params(axis='x', which='major', direction='out',
+                      length=6, width=1.0, labelsize=20)
+        a.tick_params(axis='y', which='major', direction='out',
+                      length=6, width=1.0, labelsize=20)
 
         # minor ticks
-        a.tick_params(axis='x', which='minor',
-                      direction='out', length=3, width=0.8)
-        a.tick_params(axis='y', which='minor',
-                      direction='out', length=3, width=0.8)
+        a.tick_params(axis='x', which='minor', direction='out',
+                      length=3, width=0.8)
+        a.tick_params(axis='y', which='minor', direction='out',
+                      length=3, width=0.8)
 
         # hide minor ticks if desired
         if False:  # set True to turn off minors
             a.minorticks_off()
 
     return fig, ax
+
+
 iplot.conf.MPL_CUSTOM_FUNC = my_mpl_style
 
 if iplot.Plot.show.__name__ != 'show_and_close':
     _original_show = iplot.Plot.show
 
+
 def show_and_close(self, *args, **kwargs):
+    """Enhanced show method that closes plot if not interactive."""
     self.post_process()
     try:
         return _original_show(self, *args, **kwargs)
-
     finally:
-        #ensure plt is closed and reset
-        if self.interactive != True:
+        if not self.interactive:
             self.close()
         # reset figure like in plt.show()
-        self = iplot.Plot() 
-        #This triggers new plt creation which if you then create a new fig leads to a spare plt thats nerver closed
-        # therefore we close plt incase but this still allows us to show plot later
-        if self.interactive != True:
+        self = iplot.Plot()
+        if not self.interactive:
             self.close()
-iplot.Plot.show = show_and_close
 
-from datetime import datetime
-from pathlib import Path
+
+iplot.Plot.show = show_and_close
 
 if iplot.Plot.save.__name__ != 'save_with_folder':
     _original_plot_save = iplot.Plot.save
@@ -79,7 +97,18 @@ def save_with_folder(
     folder=iplot.conf.FIG_FILE,
     **kwargs,
 ):
-    """Save with folder"""
+    """Save plot to a specified folder, creating it if necessary.
+
+    Args:
+        self: Plot instance.
+        path: Filename or boolean for default naming.
+        folder: Folder to save figures into.
+        *args: Additional positional arguments.
+        **kwargs: Additional keyword arguments.
+
+    Returns:
+        Result of original save method.
+    """
     if not path:
         return
     folder = Path(folder)
@@ -87,11 +116,10 @@ def save_with_folder(
 
     # Preserve original semantics
     if isinstance(path, bool):
-
         if self.title is not None and str(self.title).strip() != "":
             return _original_plot_save(
                 self,
-                folder / f"{self.title}_{datetime.now().strftime("%M:%H-%d_%m_%Y")}",
+                folder / f"{self.title}_{datetime.now().strftime('%M:%H-%d_%m_%Y')}",
                 *args,
                 **kwargs
             )
@@ -110,6 +138,7 @@ def save_with_folder(
         path = folder / path
 
     return _original_plot_save(self, path, *args, **kwargs)
+
 
 iplot.Plot.save = save_with_folder
 
@@ -142,40 +171,63 @@ PLOT_DEFAULTS = {
     "pty_custom_func": None,
     "pty_update_layout": None,
 }
+
+
 def rebuild_blank(self):
+    """Clear plot by rebuilding with default parameters."""
     kwargs = {k: v for k, v in self.__dict__.items() if k in PLOT_DEFAULTS}
     return self.__class__(**kwargs)
+
+
 iplot.conf.PLOT_DEFAULTS = PLOT_DEFAULTS
 iplot.Plot.clear = rebuild_blank
 
-import plotly.graph_objects as go
+
 class Iplt:
+    """Convenient interface class wrapping interplot Plot object.
+
+    Provides familiar plotting methods similar to matplotlib's pyplot,
+    supporting both interactive and non-interactive modes.
+    """
+
     def __init__(self, *args, **kwargs):
+        """Initialize with an interplot Plot instance."""
         self.fig = iplot.Plot(*args, **kwargs)
-    def new(self,*args, **kwargs):
-        self.fig.close() if not self.fig.interactive else None
+
+    def new(self, *args, **kwargs):
+        """Create a new plot, closing previous if non-interactive."""
+        if not self.fig.interactive:
+            self.fig.close()
         self.fig = iplot.Plot(*args, **kwargs)
-        self.fig.close() if not self.fig.interactive else None
+        if not self.fig.interactive:
+            self.fig.close()
 
     def show(self):
+        """Show the current plot."""
         self.fig.show()
-        # self.fig = iplot.Plot() #already done by new .show()
+
     def plot(self, *args, **kwargs):
+        """Plot data with optional formatting.
+
+        Supports calls like:
+        - plot(y): y vs. index
+        - plot(x, y): x vs. y
+        - plot(x, y, fmt): with format string controlling marker and line style
+
+        Optional kwargs: color, linestyle, marker, alpha, label, etc.
+        .. todo::
+            - Use `mode=lines+markers` instrad of scatter and line.
+            - Compatability between markers in ploly and pyplot.
         """
-        Works like plt.plot:
-        - plot(y) → x = np.arange(len(y))
-        - plot(x, y) → plots with provided x
-        - plot(x, y, fmt) → fmt controls marker and line style (e.g., 'o-', 's--', '^:')
-        - Optional: color='red', linestyle='-', etc.
-        """
-        if self.fig.interactive == False:
+        if not self.fig.interactive:
             self.fig.fig.gca().plot(*args, **kwargs)
             return
+
         fmt = None
         if len(args) == 1:  # y only
             y = np.asarray(args[0])
             x = np.arange(len(y))
-        elif len(args) == 2:  # x, y or y, fmt
+        elif len(args) == 2:
             if isinstance(args[1], str):  # y, fmt
                 y = np.asarray(args[0])
                 x = np.arange(len(y))
@@ -186,7 +238,9 @@ class Iplt:
             x, y = map(np.asarray, args[:2])
             fmt = args[2]
         else:
-            raise ValueError("Use plty.plot(y), plty.plot(x, y), or plty.plot(x, y, fmt)")
+            raise ValueError(
+                "Use plty.plot(y), plty.plot(x, y), or plty.plot(x, y, fmt)"
+            )
 
         name = kwargs.pop("label", None)
         color = kwargs.pop("color", None)
@@ -195,13 +249,26 @@ class Iplt:
         fmt = kwargs.pop("fmt", fmt)
         alpha = kwargs.pop("alpha", None)
         kwargs['opacity'] = alpha
-        
+
         # Parse format string
         if fmt:
-            marker_map = {'o': 'circle', 's': 'square', '^': 'triangle-up', 'v': 'triangle-down', 
-                          'd': 'diamond', '*': 'star', '+': 'cross', 'x': 'x'}
-            linestyle_map = {'--': 'dash', ':': 'dot', '-.': 'dashdot','-': 'solid'}
-            
+            marker_map = {
+                'o': 'circle',
+                's': 'square',
+                '^': 'triangle-up',
+                'v': 'triangle-down',
+                'd': 'diamond',
+                '*': 'star',
+                '+': 'cross',
+                'x': 'x'
+            }
+            linestyle_map = {
+                '--': 'dash',
+                ':': 'dot',
+                '-.': 'dashdot',
+                '-': 'solid'
+            }
+
             for key, val in marker_map.items():
                 if key in fmt:
                     marker = val
@@ -221,67 +288,40 @@ class Iplt:
         if marker is not None:
             marker_dict["symbol"] = marker
             marker_dict["size"] = 8
-        
-        self.fig.fig.add_trace(go.Scatter(x=x, y=y, mode="lines+markers" if marker else "lines", 
-                                     name=name, line=line_dict, marker=marker_dict, **kwargs))
-    """ Idea for iplot backend but two seperate plots lead to issues with color cycle
-    def plot_(self, *args, **kwargs):
-        linestyle = kwargs.get("linestyle", None)
-        marker = kwargs.get("marker", None)
-        fmt = kwargs.pop("fmt", None)
 
-        if fmt:
-            parse_result = parse_format_string(fmt)
-            if parse_result['color']:
-                kwargs['color'] = parse_result['color']
-            if parse_result['marker'] and marker is None:
-                kwargs['marker'] = parse_result['marker']
-            if parse_result['linestyle'] and linestyle is None:
-                kwargs['linestyle'] = parse_result['linestyle']
-        if linestyle is None:
-            linestyle = '-'
-        if linestyle:
-            self.fig.add_line(*args, **kwargs)
-        if marker:
-            self.fig.add_scatter(*args, **kwargs)"""
+        mode = "lines+markers" if marker else "lines"
+        self.fig.fig.add_trace(
+            go.Scatter(
+                x=x, y=y, mode=mode, name=name,
+                line=line_dict, marker=marker_dict, **kwargs
+            )
+        )
 
     def __getattr__(self, name):
-        """
-        Forward all unknown attributes/methods to self.fig
-        """
+        """Forward unknown attributes/methods to the internal Plot instance."""
         return getattr(self.fig, name)
-    
 
+    @staticmethod
     def parse_format_string(fmt):
+        """Parse matplotlib-style format strings.
+
+        Format strings can specify color, marker, and line style.
+
+        Args:
+            fmt (str): Format string (e.g., 'ro-', 'b--', 'g^:').
+
+        Returns:
+            dict: {'color': str or None, 'marker': str or None,
+                   'linestyle': str or None}
+
+        Examples:
+            >>> parse_format_string('ro-')
+            {'color': 'red', 'marker': 'circle', 'linestyle': 'solid'}
+            >>> parse_format_string('b--')
+            {'color': 'blue', 'marker': None, 'linestyle': 'dashed'}
+            >>> parse_format_string('g^')
+            {'color': 'green', 'marker': 'triangle-up', 'linestyle': None}
         """
-        Parse matplotlib-style format strings. For potential use in fmt argument of iplot.plot
-
-        Format strings are composed of up to 3 parts:
-        - Color: single character (r, g, b, c, m, y, k, w)
-        - Marker: symbols like o, ^, s, *, +, x, D, v, <, >, p, h, etc.
-        - Line style: -, --, :, -.
-
-        Parameters
-        ----------
-        fmt : str
-            Matplotlib-style format string (e.g., 'ro-', 'b--', 'g^:')
-
-        Returns
-        -------
-        dict
-            Dictionary with keys: 'color', 'marker', 'linestyle'
-            Values are None if not specified in format string
-
-        Examples
-        --------
-        >>> parse_format_string('ro-')
-        {'color': 'red', 'marker': 'circle', 'linestyle': 'solid'}
-        >>> parse_format_string('b--')
-        {'color': 'blue', 'marker': None, 'linestyle': 'dashed'}
-        >>> parse_format_string('g^')
-        {'color': 'green', 'marker': 'triangle-up', 'linestyle': None}
-        """
-        # Matplotlib color codes (single character)
         COLOR_CODES = {
             'b': 'blue',
             'g': 'green',
@@ -293,7 +333,6 @@ class Iplt:
             'w': 'white',
         }
 
-        # Matplotlib marker symbols
         MARKER_SYMBOLS = {
             '.': 'circle',
             'o': 'circle',
@@ -314,7 +353,6 @@ class Iplt:
             '_': 'line-ew',
         }
 
-        # Line styles (order matters - check longer patterns first)
         LINE_STYLES = {
             '--': 'dashed',
             '-.': 'dashdot',
@@ -322,22 +360,17 @@ class Iplt:
             '-': 'solid',
         }
 
-        result = {
-            'color': None,
-            'marker': None,
-            'linestyle': None,
-        }
-
+        result = {'color': None, 'marker': None, 'linestyle': None}
         remaining = fmt
 
-        # Extract line style (check longer patterns first)
+        # Extract line style (longer patterns first)
         for ls_key in ['--', '-.', ':', '-']:
             if ls_key in remaining:
                 result['linestyle'] = LINE_STYLES[ls_key]
                 remaining = remaining.replace(ls_key, '', 1)
                 break
 
-        # Extract color (single character)
+        # Extract color (single char)
         for char in remaining:
             if char in COLOR_CODES:
                 result['color'] = COLOR_CODES[char]
@@ -351,12 +384,11 @@ class Iplt:
                 remaining = remaining.replace(char, '', 1)
                 break
 
-        # Warn if there are unrecognized characters
         if remaining.strip():
             import warnings
             warnings.warn(f"Unrecognized format string components: '{remaining}'")
 
         return result
-    
+
 
 iplt = Iplt()

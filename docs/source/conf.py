@@ -15,6 +15,8 @@ extensions = [
     'sphinx.ext.duration',
     'sphinx.ext.doctest',
     'sphinx.ext.autodoc',
+    'sphinx.ext.napoleon',
+    'sphinx.ext.todo',
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
 ]
@@ -33,3 +35,6 @@ html_theme = 'sphinx_rtd_theme'
 
 # -- Options for EPUB output
 epub_show_urls = 'footnote'
+
+# Show TODOs in the docs
+todo_include_todos = True

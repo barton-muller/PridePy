@@ -1,18 +1,17 @@
-"""
-PridePy.colors
-Color utilities, swatch classes, color reading, colormap creation.
-"""
 import colorsys
 import csv
-import numpy as np
-from matplotlib.colors import ListedColormap, to_rgb, LinearSegmentedColormap
-from matplotlib import cycler
-from colorspacious import cspace_convert
-import matplotlib as mpl
 import os
+
+import matplotlib as mpl
+import numpy as np
+from colorspacious import cspace_convert
+from matplotlib import cycler
+from matplotlib.colors import LinearSegmentedColormap, ListedColormap, to_rgb
+
 
 # --- ColorSwatch and PaintKit ---
 def hex_to_rgb(hex_code):
+    """Convert a hex color code to an RGB tuple with values 0-1."""
     hex_clean = hex_code.lstrip("#")
     return tuple(int(hex_clean[i:i+2], 16)/255 for i in (0, 2, 4))
 def floats_to_rgbstring(color_float):
@@ -21,7 +20,16 @@ def floats_to_rgbstring(color_float):
     return f"rgb({int(color_float[0]*255)}, {int(color_float[1]*255)}, {int(color_float[2]*255)})"
 
 class ColorSwatch:
+    """A single color with metadata including name, hex code, and tags."""
+
     def __init__(self, name, hex_code, tags=None):
+        """Create a color swatch.
+
+        Args:
+            name: Display name for the color.
+            hex_code: Hex color code (e.g., '#FF5500').
+            tags: Optional set of tags for filtering (e.g., {'bright', 'red'}).
+        """
         self.name = name
         self.hex = hex_code.upper()
         self.tags = set(tags) if tags else set()
@@ -29,25 +37,42 @@ class ColorSwatch:
         self.hsl = self._hex_to_hsl()
 
     def _hex_to_hsl(self):
+        """Convert the swatch's RGB to HSL (hue in degrees, saturation, lightness)."""
         r, g, b = self.rgb
-        h, l, s = colorsys.rgb_to_hls(r, g, b)
-        return h * 360, s, l
+        hue, lightness, saturation = colorsys.rgb_to_hls(r, g, b)
+        return hue * 360, saturation, lightness
 
     def has_tag(self, tag):
+        """Check if this swatch has a specific tag."""
         return tag in self.tags
 
     def __repr__(self):
         return f"ColorSwatch(name='{self.name}', hex='{self.hex}', tags={self.tags})"
 
 class PaintKit:
+    """A collection of ColorSwatches with filtering and visualization methods."""
+
     def __init__(self, colors):
+        """Create a PaintKit from a list of ColorSwatch objects."""
         self.colors = colors
-        self.color_tags = ['green','teal','lightblue', 'blue', 'purple', 'pink','fuchia', 'red', 'orange', 'yellow']
+        self.color_tags = ['green',
+                           'teal',
+                           'lightblue',
+                            'blue',
+                            'purple',
+                            'pink',
+                            'fuchia',
+                            'red',
+                            'orange',
+                            'yellow']
         self.saturation_tags = ['bright', 'dark', 'muted']
 
     def __add__(self, other):
+        """Combine two PaintKits into one."""
         return PaintKit(self.colors + other.colors)
+
     def __len__(self):
+        """Return the number of colors in the kit."""
         return len(self.colors)
     def __repr__(self):
         ret = ""
@@ -57,15 +82,35 @@ class PaintKit:
         self.display_paintkit( label='name')
         return f"Collection of {len(self.colors)} colors"
     def filter(self, *, tags=None, any_tags=None):
+        """Filter colors by tags.
+
+        Args:
+            tags: Set of tags that must ALL be present.
+            any_tags: Set of tags where at least ONE must be present.
+
+        Returns:
+            A new PaintKit with matching colors.
+        """
         result = self.colors
         if any_tags:
             result = [c for c in result if c.tags & any_tags]
         if tags:
             result = [c for c in result if tags.issubset(c.tags)]
         return PaintKit(result)
+
     def get_named(self, *names):
+        """Get swatches by their exact names."""
         return [c for c in self.colors if c.name in names]
+
     def ordered_swatches(self, tag_list):
+        """Get swatches in a specific order by tag, one per tag.
+
+        Args:
+            tag_list: List of tags defining the desired order.
+
+        Returns:
+            A new PaintKit with one swatch per tag in order.
+        """
         swatches = []
         missing = []
         for tag in tag_list:
@@ -77,11 +122,15 @@ class PaintKit:
         if missing:
             print(f"Missing tags: {missing}")
         return PaintKit(swatches)
+
     def to_cmap(self, colors=None, name="custom_cmap"):
+        """Convert to a matplotlib ListedColormap."""
         if colors is None:
             colors = self.colors
         return ListedColormap([c.hex for c in colors], name=name)
+
     def to_cycler(self, colors=None):
+        """Convert to a matplotlib color cycler for axes.prop_cycle."""
         if colors is None:
             colors = self.colors
         return cycler(color=[c.hex for c in colors])
@@ -176,6 +225,15 @@ class PaintKit:
         plt.show()
 
 def read_colors_from_csv(filename):
+    """Load ColorSwatches from a CSV file.
+
+    Args:
+        filename: Path to CSV with 'name', 'hex_code', and 'tags' columns.
+            Tags should be semicolon-separated.
+
+    Returns:
+        List of ColorSwatch objects.
+    """
     swatches = []
     with open(filename, newline='', encoding='utf-8') as csvfile:
         reader = csv.DictReader(csvfile)
@@ -186,6 +244,17 @@ def read_colors_from_csv(filename):
 
 # --- Colormap creation ---
 def perceptual_colormap_nonuniform(colors, positions=None, n=256, space="CAM02-UCS"):
+    """Create a perceptually uniform colormap with optional custom positions.
+
+    Args:
+        colors: List of colors (hex, names, or RGB tuples).
+        positions: Optional list of positions [0.0, ..., 1.0] for each color.
+        n: Number of steps in the output colormap.
+        space: Perceptual color space for interpolation.
+
+    Returns:
+        A matplotlib ListedColormap.
+    """
     num_colors = len(colors)
     if positions is None:
         positions = np.linspace(0.0, 1.0, num_colors)
@@ -211,6 +280,17 @@ def perceptual_colormap_nonuniform(colors, positions=None, n=256, space="CAM02-U
     return ListedColormap(rgb_interp, name="perceptual_nonuniform")
 
 def srgb_gradient_colormap(colors, positions=None, n=256, name="srgb_colormap"):
+    """Create a gradient colormap using sRGB interpolation.
+
+    Args:
+        colors: List of colors (hex, names, or RGB tuples).
+        positions: Optional list of positions [0.0, ..., 1.0] for each color.
+        n: Number of steps in the output colormap.
+        name: Name for the colormap.
+
+    Returns:
+        A matplotlib LinearSegmentedColormap.
+    """
     rgb_colors = [to_rgb(c) for c in colors]
     if positions is not None:
         assert len(positions) == len(rgb_colors)
@@ -219,7 +299,9 @@ def srgb_gradient_colormap(colors, positions=None, n=256, name="srgb_colormap"):
     else:
         return LinearSegmentedColormap.from_list(name, rgb_colors, N=n)
 
+
 def show_colormap(cmap, name=None, height=0.5):
+    """Display a colormap as a horizontal gradient bar."""
     gradient = np.linspace(0, 1, 256).reshape(1, -1)
     import matplotlib.pyplot as plt
     fig, ax = plt.subplots(figsize=(6, height))
@@ -229,7 +311,9 @@ def show_colormap(cmap, name=None, height=0.5):
         ax.set_title(name, fontsize=10)
     plt.show()
 
+
 def paintkit_to_colorway(paintkit):
+    """Convert a PaintKit to a Plotly-compatible colorway list."""
     colorway = [c['color'] for c in paintkit.to_cycler()._left]
     return colorway
 
@@ -244,12 +328,17 @@ except FileNotFoundError:
     use_paintkit = False
 
 if use_paintkit:
-    rainbow = ['green','lightblue', 'blue', 'purple', 'pink','fuchia', 'orange']
-    full_rainbow = ['green','teal','lightblue', 'blue', 'purple', 'pink','fuchia', 'red', 'orange', 'yellow']
-    flexoki = [ 'blue', 'purple', 'pink','fuchia','red', 'orange', 'yellow','green','teal','lightblue',]
-    tab10 = ['blue', 'orange', 'green', 'pink','lightblue', 'purple',  'fuchia','yellow', 'teal', 'red']
-    bright_tab10 = paintkit.filter(tags={'bright'}).ordered_swatches(tab10)
-    mpl.rcParams['axes.prop_cycle'] = bright_tab10.to_cycler()
+    """Some default color schemes. Sets bright_tab10 as default color cycle."""
+    rainbow = ['green','lightblue', 'blue', 'purple',
+               'pink','fuchia', 'orange']
+    full_rainbow = ['green','teal','lightblue', 'blue',
+                    'purple', 'pink','fuchia', 'red', 'orange', 'yellow']
+    flexoki = [ 'blue', 'purple', 'pink','fuchia','red',
+               'orange', 'yellow','green','teal','lightblue',]
+    tab10 = ['blue', 'orange', 'green', 'pink','lightblue',
+             'purple',  'fuchia','yellow', 'teal', 'red']
+
     scheme = paintkit.filter(tags={'bright'}).ordered_swatches(tab10)
     mpl.rcParams['axes.prop_cycle'] = scheme.to_cycler()  # set default color cycle
     plotly_scheme = paintkit_to_colorway(scheme)
+

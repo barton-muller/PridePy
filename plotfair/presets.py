@@ -1,11 +1,16 @@
 """
-PridePy.presets
-Default plotting settings and savefig wrapper.
+plotfair.presets
+
+This module defines default plotting settings for matplotlib and seaborn to ensure
+consistent and visually appealing figures across the project. It updates matplotlib's
+rcParams with preferred defaults, applies a seaborn style, and monkey-patches
+matplotlib.pyplot.savefig with a wrapper that saves figures to a specified folder by default.
 """
-import matplotlib as mpl
-import seaborn as sns
 import os
+
+import matplotlib as mpl
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 SAVE_FIGS = True
 
@@ -66,6 +71,21 @@ sns.set_style("white", {
 _original_savefig = plt.savefig
 
 def savefig_with_folder(fname, *args, folder="figs", **kwargs):
+    """
+    Save a matplotlib figure to a file, ensuring the output directory exists.
+
+    Parameters:
+        fname (str): The filename for the saved figure. If not an absolute path,
+            it will be saved inside the specified folder.
+        *args: Additional positional arguments passed to plt.savefig.
+        folder (str): The folder to save the figure in (default: "figs").
+        **kwargs: Additional keyword arguments passed to plt.savefig.
+
+    Behavior:
+        - If SAVE_FIGS is True, creates the folder if it doesn't exist and saves the figure.
+        - If fname is not an absolute path, prepends the folder to the filename.
+        - If SAVE_FIGS is False, prints a message and does not save.
+    """
     if SAVE_FIGS:
         if not os.path.isabs(fname):
             os.makedirs(folder, exist_ok=True)

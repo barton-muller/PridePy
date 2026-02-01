@@ -1,5 +1,9 @@
-import os
 import csv
+import os
+import sys
+
+if sys.platform != "darwin":
+    raise RuntimeError("apple_clr_pallete requires macOS (Cocoa / AppKit)")
 from Cocoa import NSColor, NSColorList
 
 
@@ -8,6 +12,18 @@ def make_clr_palette(
     output_path=None,
     palette_name="CSV Palette"
 ):
+    """Create a macOS .clr color palette file from a CSV.
+
+    Args:
+        csv_path: Path to CSV with 'hex_code' and 'tags' columns.
+            Defaults to colorsheet.csv in parent directory.
+        output_path: Where to save the .clr file.
+            Defaults to pridepy.clr in parent directory.
+        palette_name: Name shown in macOS color picker.
+
+    Returns:
+        Path to the generated .clr file.
+    """
     # If no CSV path is provided, default to colorsheet.csv next to this script
     if csv_path is None:
         base_dir = os.path.dirname(os.getcwd())
