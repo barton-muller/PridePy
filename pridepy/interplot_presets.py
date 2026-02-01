@@ -52,10 +52,15 @@ def show_and_close(self, *args, **kwargs):
         return _original_show(self, *args, **kwargs)
 
     finally:
+        #ensure plt is closed and reset
         if self.interactive != True:
             self.close()
-        self = iplot.Plot()
-
+        # reset figure like in plt.show()
+        self = iplot.Plot() 
+        #This triggers new plt creation which if you then create a new fig leads to a spare plt thats nerver closed
+        # therefore we close plt incase but this still allows us to show plot later
+        if self.interactive != True:
+            self.close()
 iplot.Plot.show = show_and_close
 
 from datetime import datetime
@@ -147,9 +152,14 @@ import plotly.graph_objects as go
 class Iplt:
     def __init__(self, *args, **kwargs):
         self.fig = iplot.Plot(*args, **kwargs)
+    def new(self,*args, **kwargs):
+        self.fig.close() if not self.fig.interactive else None
+        self.fig = iplot.Plot(*args, **kwargs)
+        self.fig.close() if not self.fig.interactive else None
+
     def show(self):
         self.fig.show()
-        self.fig = iplot.Plot()
+        # self.fig = iplot.Plot() #already done by new .show()
     def plot(self, *args, **kwargs):
         """
         Works like plt.plot:

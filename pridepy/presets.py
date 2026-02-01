@@ -52,7 +52,8 @@ mpl.rcParams.update({
     'savefig.dpi': 600,
     'savefig.bbox': 'tight',
     'savefig.transparent': True,
-    'image.cmap': 'plasma'
+    'image.cmap': 'plasma',
+    "errorbar.capsize" : 2.0,
 })
 
 sns.set_style("white", {
