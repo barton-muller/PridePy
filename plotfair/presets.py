@@ -5,6 +5,7 @@ This module defines default plotting settings for matplotlib and seaborn to ensu
 consistent and visually appealing figures across the project. It updates matplotlib's
 rcParams with preferred defaults, applies a seaborn style, and monkey-patches
 matplotlib.pyplot.savefig with a wrapper that saves figures to a specified folder by default.
+#TODO: Create Style with https://matplotlib.org/stable/users/explain/customizing.html
 """
 import os
 
