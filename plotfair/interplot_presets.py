@@ -68,11 +68,11 @@ if iplot.Plot.show.__name__ != 'show_and_close':
     _original_show = iplot.Plot.show
 
 
-def show_and_close(self, *args, **kwargs):
+def show_and_close(self):
     """Enhanced show method that closes plot if not interactive."""
     self.post_process()
     try:
-        return _original_show(self, *args, **kwargs)
+        return _original_show(self)
     finally:
         if not self.interactive:
             self.close()
@@ -82,7 +82,7 @@ def show_and_close(self, *args, **kwargs):
             self.close()
 
 
-iplot.Plot.show = show_and_close
+iplot.Plot.show = show_and_close  # ty:ignore[invalid-assignment]
 
 if iplot.Plot.save.__name__ != 'save_with_folder':
     _original_plot_save = iplot.Plot.save
@@ -193,7 +193,8 @@ class Iplt:
     def __init__(self, *args, **kwargs):
         """Initialize with an interplot Plot instance."""
         self.fig = iplot.Plot(*args, **kwargs)
-
+        if not self.fig.interactive:
+            self.fig.close()
     def new(self, *args, **kwargs):
         """Create a new plot, closing previous if non-interactive."""
         if not self.fig.interactive:
@@ -202,9 +203,6 @@ class Iplt:
         if not self.fig.interactive:
             self.fig.close()
 
-    def show(self):
-        """Show the current plot."""
-        self.fig.show()
 
     def plot(self, *args, **kwargs):
         """Plot data with optional formatting.
@@ -215,9 +213,7 @@ class Iplt:
         - plot(x, y, fmt): with format string controlling marker and line style
 
         Optional kwargs: color, linestyle, marker, alpha, label, etc.
-        .. todo::
-            - Use `mode=lines+markers` instrad of scatter and line.
-            - Compatability between markers in ploly and pyplot.
+
         """
         if not self.fig.interactive:
             self.fig.fig.gca().plot(*args, **kwargs)
@@ -353,7 +349,7 @@ class Iplt:
             '_': 'line-ew',
         }
 
-        LINE_STYLES = {
+        LINE_STYLES: dict[ str, str] = {
             '--': 'dashed',
             '-.': 'dashdot',
             ':': 'dotted',
