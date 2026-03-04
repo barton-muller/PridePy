@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 SAVE_FIGS = True
+SAVE_FIGS_FOLDER = 'figs'
 
 # Seaborn base style
 sns.set_style("white")
@@ -69,9 +70,9 @@ sns.set_style("white", {
     "ytick.left": True
 })
 
-_original_savefig = plt.savefig
+_original_savefig = mpl.figure.Figure.savefig
 
-def savefig_with_folder(fname, *args, folder="figs", **kwargs):
+def savefig_with_folder(self,fname, *args, folder=None, **kwargs):
     """
     Save a matplotlib figure to a file, ensuring the output directory exists.
 
@@ -88,11 +89,13 @@ def savefig_with_folder(fname, *args, folder="figs", **kwargs):
         - If SAVE_FIGS is False, prints a message and does not save.
     """
     if SAVE_FIGS:
+        if folder is None:
+            folder = SAVE_FIGS_FOLDER
         if not os.path.isabs(fname):
             os.makedirs(folder, exist_ok=True)
             fname = os.path.join(folder, fname)
-        return _original_savefig(fname, *args, **kwargs)
+        return _original_savefig(self,fname, *args, **kwargs)
     else:
         print('Currently not saving figures')
 
-plt.savefig = savefig_with_folder
+mpl.figure.Figure.savefig = savefig_with_folder

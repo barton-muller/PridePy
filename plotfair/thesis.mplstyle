@@ -1,0 +1,68 @@
+## plotfair.thesis
+## Publication-quality style for thesis figures.
+##
+## Settings merged from three layers (later layer wins on conflict):
+##   1. plotfair base presets
+##   2. LaTeX / font block
+##   3. Small-figure block (final)
+
+## --- Figure ---
+figure.figsize:     3.4, 2.125
+figure.dpi:         200
+figure.facecolor:   white
+
+## --- Axes ---
+axes.titlesize:     18
+axes.labelsize:     12
+axes.labelweight:   bold
+axes.linewidth:     1.2
+axes.edgecolor:     black
+axes.spines.top:    False
+axes.spines.right:  False
+axes.spines.left:   True
+axes.spines.bottom: True
+
+## --- Ticks ---
+xtick.direction:        out
+ytick.direction:        out
+xtick.major.size:       6
+ytick.major.size:       6
+xtick.minor.size:       3
+ytick.minor.size:       3
+xtick.major.width:      1.0
+ytick.major.width:      1.0
+xtick.minor.width:      0.8
+ytick.minor.width:      0.8
+xtick.labelsize:        9
+ytick.labelsize:        9
+xtick.minor.visible:    False
+ytick.minor.visible:    False
+
+## --- Lines ---
+lines.linewidth:        2.5
+lines.markersize:       6
+lines.markeredgewidth:  0.8
+
+## --- Font ---
+font.size:      10
+font.family:    sans-serif
+font.sans-serif: Arial, DejaVu Sans, Liberation Sans
+
+## --- LaTeX (block 1) ---
+text.usetex:            True
+text.latex.preamble:    \usepackage{newtxsf}\usepackage{sfmath}
+
+## --- Legend ---
+legend.fontsize:    8
+legend.frameon:     False
+legend.loc:         best
+
+## --- Save ---
+savefig.dpi:            600
+savefig.bbox:           tight
+savefig.transparent:    True
+savefig.format:        pdf
+
+## --- Misc ---
+image.cmap:         plasma
+errorbar.capsize:   2.0

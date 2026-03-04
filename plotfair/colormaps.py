@@ -10,7 +10,7 @@ placed at nonuniform positions and visualizing colormaps.
 
 import numpy as np
 from colorspacious import cspace_convert
-from matplotlib.colors import LinearSegmentedColormap, ListedColormap, to_rgb
+from matplotlib.colors import LinearSegmentedColormap, ListedColormap, LogNorm, to_rgb
 
 
 def perceptual_colormap_nonuniform(colors, positions=None, n=256, space="CAM02-UCS"):
@@ -102,3 +102,21 @@ def show_colormap(cmap, name=None, height=0.5):
     if name:
         ax.set_title(name, fontsize=10)
     plt.show()
+
+
+def log_cmap(cmap, x, *, x_array=None, vmin=None, vmax=None):
+    """
+    Exactly one of:
+        - x_array
+        - (vmin and vmax)
+    must be provided.
+    """
+    if (x_array is None) == (vmin is None or vmax is None):
+        raise ValueError("Provide either x_array OR both vmin and vmax.")
+
+    if x_array is not None:
+        vmin = x_array.min()
+        vmax = x_array.max()
+
+    norm = LogNorm(vmin=vmin, vmax=vmax)
+    return cmap(norm(x))
