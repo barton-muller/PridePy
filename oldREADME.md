@@ -202,3 +202,4 @@ See docstrings in each module for details on classes and functions.
 - [Coolors – Color Schemes Generator](https://coolors.co/)
 - [Palettable – Color Palettes in Python](https://jiffyclub.github.io/palettable/)
 - [flexoki colors](https://stephango.com/flexoki)
+- [color advice](https://www.simplifiedsciencepublishing.com/resources/best-color-palettes-for-scientific-figures-and-data-visualizations)
