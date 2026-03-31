@@ -12,8 +12,8 @@ figure.dpi:         200
 figure.facecolor:   white
 
 ## --- Axes ---
-axes.titlesize:     18
-axes.labelsize:     12
+axes.titlesize:     14
+axes.labelsize:     11
 axes.labelweight:   bold
 axes.linewidth:     1.2
 axes.edgecolor:     black
