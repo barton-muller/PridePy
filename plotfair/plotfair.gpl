@@ -1,0 +1,54 @@
+GIMP Palette
+Name: plotfair
+Columns: 1
+#
+ 75 171 110    Go Green
+ 53 203 196    Bright Teal
+ 93 203 243    Sky Blue
+ 64 105 224    Royal Blue
+209 110 255    Parmaviolet
+255  88 179    Hot Pink
+234  35  83    Crimson Pink
+241  65  36    Red-Orange
+253 140   0    Orange
+255 224 102    Soft Yellow
+ 34 107 103    Dark Teal
+ 25 135 169    Ocean Blue
+ 52  72 133    Indigo
+ 99  53 133    Deep Purple
+163  29 108    Magenta Plum
+147   3  46    Burgundy
+195  38  12    Red
+247  92   3    Tangerine
+255 186   8    Golden Yellow
+ 70 135 128    Muted Teal
+104 121 163    Slate Blue
+200 163 230    Lavender
+225  90 161    Rose Pink
+250 105 123    Salmon Pink
+224 100  80    Coral
+233 196 106    Warm Sand
+209  77  65    Red
+218 112  44    Orange
+208 162  21    Yellow
+135 154  57    Green
+ 58 169 159    Cyan
+ 67 133 190    Blue
+139 126 200    Purple
+206  93 151    Magenta
+175  48  41    Red
+188  82  21    Orange
+173 131   1    Yellow
+102 128  11    Green
+ 36 131 123    Cyan
+ 32  94 166    Blue
+ 94  64 157    Purple
+160  47 111    Magenta
+  0   0   0    black
+ 36  36  36    grey-1
+ 73  73  73    grey-2
+109 109 109    grey-3
+146 146 146    grey-4
+182 182 182    grey-5
+219 219 219    grey-6
+255 255 255    white

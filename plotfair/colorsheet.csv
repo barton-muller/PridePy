@@ -41,3 +41,11 @@ hex_code,name,tags
 #205EA6,Blue,flexoki;blue;dark
 #5E409D,Purple,flexoki;purple;dark
 #A02F6F,Magenta,flexoki;magenta;dark;fuchia
+#000000,black,greys;0
+#242424,grey-1,greys;1
+#494949,grey-2,greys;2
+#6D6D6D,grey-3,greys;3
+#929292,grey-4,greys;4
+#B6B6B6,grey-5,greys;5
+#DBDBDB,grey-6,greys;6
+#FFFFFF,white,greys;7
